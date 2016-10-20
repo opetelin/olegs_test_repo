@@ -13,6 +13,10 @@ class ExampleApp(QtGui.QMainWindow, test_pyqt.Ui_MainWindow):
 		#connect button pressed event with some function
 		self.open_folder_button.clicked.connect(self.open_folder)
 
+		self.lcd_slider.setMinimum(0)
+		self.lcd_slider.setMaximum(100)
+		self.lcd_slider.valueChanged.connect(self.slider_val)
+
 	#prints the contents of a selected directory to our list widget
 	def open_folder(self):
 		self.listWidget.clear()
@@ -25,6 +29,11 @@ class ExampleApp(QtGui.QMainWindow, test_pyqt.Ui_MainWindow):
 				self.listWidget.addItem(file_name)
 
 
+	def slider_val(self):
+		new_val = self.lcd_slider.value()
+
+		#update lcd display with new value
+		self.lcd.display(new_val)
 	
 
 def main():
