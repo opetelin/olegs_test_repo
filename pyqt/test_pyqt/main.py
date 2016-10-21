@@ -3,7 +3,8 @@ import sys
 import os
 
 #generated from QTDesigner (.ui file turned into .py through pyuic4)
-import test_pyqt
+import test_pyqt	#main window
+import dialog		#simple dialog
 
 #stuff for plotting graphs
 import matplotlib.pyplot as plt
@@ -21,6 +22,7 @@ class ExampleApp(QtGui.QMainWindow, test_pyqt.Ui_MainWindow):
 
 		#connect button pressed event with some function
 		self.open_folder_button.clicked.connect(self.open_folder)
+		self.btn_dialog.clicked.connect(self.open_dialog)
 
 		#setup slider
 		self.lcd_slider.setMinimum(0)
@@ -49,6 +51,14 @@ class ExampleApp(QtGui.QMainWindow, test_pyqt.Ui_MainWindow):
 			for file_name in os.listdir(directory):
 				self.listWidget.addItem(file_name)
 
+	def open_dialog(self):
+		dia = SimpleDialog()
+
+		dia.setModal(True) #blocks access to other windows until this one is closed
+
+		dia.exec_()
+
+
 	#slider value reflected in the LCD
 	def slider_val(self):
 		new_val = self.lcd_slider.value()
@@ -68,6 +78,21 @@ class ExampleApp(QtGui.QMainWindow, test_pyqt.Ui_MainWindow):
 		
 		self.canvas.draw() 
 	
+
+#A simple dialog that will be opened by pressing a button from the main window
+class SimpleDialog(QtGui.QDialog, dialog.Ui_dialog):
+	def __init__(self, parent=None):
+		super(SimpleDialog, self).__init__()
+		self.setupUi(self)
+
+		self.btn_exit.clicked.connect(self.exit)
+
+	def exit(self):
+		#self.done(0)
+		self.close()
+
+		
+
 
 def main():
 	app = QtGui.QApplication(sys.argv)

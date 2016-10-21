@@ -53,9 +53,9 @@ class Ui_MainWindow(object):
         self.open_folder_button = QtGui.QPushButton(self.tab)
         self.open_folder_button.setObjectName(_fromUtf8("open_folder_button"))
         self.horizontalLayout_3.addWidget(self.open_folder_button)
-        self.dummy_button = QtGui.QPushButton(self.tab)
-        self.dummy_button.setObjectName(_fromUtf8("dummy_button"))
-        self.horizontalLayout_3.addWidget(self.dummy_button)
+        self.btn_dialog = QtGui.QPushButton(self.tab)
+        self.btn_dialog.setObjectName(_fromUtf8("btn_dialog"))
+        self.horizontalLayout_3.addWidget(self.btn_dialog)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_5.addLayout(self.verticalLayout_3)
         self.horizontalLayout_6.addLayout(self.horizontalLayout_5)
@@ -107,13 +107,13 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
         self.open_folder_button.setText(_translate("MainWindow", "Open Folder", None))
-        self.dummy_button.setText(_translate("MainWindow", "Dummy", None))
+        self.btn_dialog.setText(_translate("MainWindow", "Show Test Dialog", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Button Test", None))
         self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Move the slider to change LCD value.</p></body></html>", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Slider Test", None))

@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <property name="sizePolicy">
@@ -48,9 +48,9 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="dummy_button">
+               <widget class="QPushButton" name="btn_dialog">
                 <property name="text">
-                 <string>Dummy</string>
+                 <string>Show Test Dialog</string>
                 </property>
                </widget>
               </item>
@@ -61,8 +61,6 @@
          </layout>
         </item>
        </layout>
-       <zorder>horizontalLayoutWidget</zorder>
-       <zorder>horizontalLayoutWidget</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
