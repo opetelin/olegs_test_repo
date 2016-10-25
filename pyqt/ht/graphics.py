@@ -73,9 +73,9 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 
 			slider_value = slider.value()
 
-			datetime = util.get_datetime_str()
+			[date, time] = util.get_date_time_str()
 			
-			db.add_event(name, 'Overall', datetime, slider_value)
+			db.add_event(name, 'Overall', date, time, slider_value)
 			
 		self.close()
 	

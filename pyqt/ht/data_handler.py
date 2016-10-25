@@ -222,12 +222,12 @@ class Database:
 		threads[thread_name].remove_item( item_name )
 		self.update_threads( threads )
 
-	def add_event(self, thread_name, item_name, date, score, comment='', duration=-1):
+	def add_event(self, thread_name, item_name, date, time, score, comment='', duration=-1):
 		threads = self.get_threads()
-		threads[thread_name].add_event(item_name, date, score, comment, duration)
+		threads[thread_name].add_event(item_name, date, time, score, comment, duration)
 		self.update_threads( threads )
 		
-	def remove_event(self, thread_name, item_name, date):
+	def remove_event(self, thread_name, item_name, date, time):
 		pass	#TODO
 
 
@@ -285,9 +285,9 @@ class Thread:
 
 		self.items[item_name] = Item(name=item_name, high_is_good = high_is_good)
 
-	def add_event(self, item_name, date, score, comment, duration):
+	def add_event(self, item_name, date, time, score, comment, duration):
 		if item_name in self.items:
-			self.items[item_name].add_event(date, score, comment, duration)
+			self.items[item_name].add_event(date, time, score, comment, duration)
 		else:
 			print(item_name + " not in threads's item list!")
 			sys.exit() 
@@ -305,11 +305,11 @@ class Thread:
 
 	@classmethod
 	def from_database(cls, name, 
-	                  items):	#a dictionary from the database
+	                  items_dict):	#a dictionary from the database
 		item_dict = {}
 
-		for item in items:
-			item_class = Item.from_database(item, items[item]['high_is_good'], items[item]['events'])
+		for item in items_dict:
+			item_class = Item.from_database(item, items_dict[item]['high_is_good'], items_dict[item]['events'])
 			item_dict[item] = item_class
 
 		return cls(name, item_dict)
@@ -337,14 +337,14 @@ class Item:
 		self.high_is_good = high_is_good
 		self.events = event_list
 
-	def add_event(self, date, score, comment, duration):
-		#check that we don't have any duplications going by date (which should include the time as well)
+	def add_event(self, date, time, score, comment, duration):
+		#check that we don't have any duplications going by date/time
 		for event in self.events:
-			if event.date == date:
+			if event.date == date and event.time == time:
 				print('An event with the provided date/time has already been recorded!')
 				sys.exit()
 
-		event = Event(date, score, comment, duration)
+		event = Event(date, time, score, comment, duration)
 		self.events += [event]
 
 	@classmethod
@@ -355,6 +355,7 @@ class Item:
 
 		for event in events:
 			event_class = Event(date = event['date'],
+			                    time = event['time'],
 			                    score = event['score'],
 					    comment = event['comment'],
 					    duration = event['duration'])
@@ -379,11 +380,13 @@ class Item:
 
 class Event:
 	"""Each event is an entry in a Thread::Item that describes a specific occurance of that item"""
-	def __init__(self, date, 		#the date that this event occured
+	def __init__(self, date, 		#the date this event occured
+	                   time,		#the time this event occured
 	                   score,		#the score (or intensity) of this event. 
 			   comment, 		#words describing this event
 			   duration):		#how long did this event last for?
 		self.date = date
+		self.time = time
 		self.score = score
 		self.comment = comment
 		self.duration = duration
@@ -391,8 +394,55 @@ class Event:
 	def as_dict(self):
 		d = {}
 		d['date'] = self.date
+		d['time'] = self.time
 		d['score'] = self.score
 		d['comment'] = self.comment
 		d['duration'] = self.duration
 		return d
+
+
+class Diary:
+	def __init__(self, entries = []):
+		self.entries = entries
+
+	def add_entry(self, date, time, entry):
+		entry = Diary_Entry(date, time, entry)
+		self.entries += [entry]
+
+
+	@classmethod
+	def from_database(cls, entries_dict):
+		entry_list = []
+		for entry in entries_dict:
+			entry_class = Diary_Entry(entries[entry]['date'], entries[entry]['time'])
+			entry_list += [entry_class]
+
+		return cls(entry_list)
+	
+	def as_dict(self):
+		entries = []
+		for entry in self.entries:
+			entries += [entry.as_dict()]
+
+		d = {'entries': entries}
+
+		return d
+
+
+class Diary_Entry:
+	def __init__(self, date, time, entry):
+		self.date = date
+		self.time = time
+
+		self.entry = entry
+
+	def as_dict(self):
+		d = {}
+		d['date'] = self.date
+		d['time'] = self.time
+		d['entry'] = self.entry
+
+		return d
+
+
 
