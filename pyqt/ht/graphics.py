@@ -58,10 +58,8 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 				self.sliders_container.itemAt(i).widget().setParent(None)
 			elif self.sliders_container.itemAt(i).spacerItem():
 				self.sliders_container.removeItem( self.sliders_container.itemAt(i).spacerItem() )
-
 		self.sliders = []
 		
-
 	def done_clicked(self):
 		self.close()
 	
@@ -73,7 +71,9 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 		self.resize(346, 22)	#doesn't work?
 
 
+
 class QuickSlider:
+	"""Works with the sliders window dialog to add and update the custom sliders"""
 	def __init__(self, layout, slider_name):
 		self.slider = QtWidgets.QSlider(orientation = 1)
 		self.slider.setTickInterval(1)
@@ -133,12 +133,20 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 		db = Database()
 
 		#get text from our textbox
-		thread_name = str(self.text_entry.displayText())
+		new_thread_name = str(self.text_entry.displayText())
 
-		#add this thread name to program state and the threads list
-		if db.add_quicklist_thread( thread_name ):
-			#update the list widget
-			self.thread_list.addItem( thread_name ) #QtCore.QString(thread_name) )
+		#add thread if thread name is legal
+		if not new_thread_name:
+			err = ErrorDialog('No thread name entered!')
+
+		else:
+			#get checkbox value
+			high_is_good = self.chk_high_is_good.isChecked()
+
+			#add this thread name to program state and the threads list
+			if db.add_quicklist_thread( new_thread_name, high_is_good ):
+				#update the list widget
+				self.thread_list.addItem( new_thread_name ) 
 
 	def remove_clicked(self):
 		db = Database()
@@ -158,11 +166,15 @@ class ErrorDialog(QtWidgets.QDialog, err_dialog.Ui_Error):
 	def __init__(self, error_text):
 		super().__init__()
 		self.setupUi(self)
+
+		self.setModal(True)
 		
 		#connect our OK button
 		self.btn_ok.clicked.connect( self.exit_func )
 
 		self.err_label.setText( error_text )
+
+		self.exec_()
 
 	def exit_func(self):
 		self.close()

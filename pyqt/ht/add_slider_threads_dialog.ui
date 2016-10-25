@@ -28,6 +28,19 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="chk_high_is_good">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>High score is good</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLineEdit" name="text_entry"/>
          </item>
          <item>

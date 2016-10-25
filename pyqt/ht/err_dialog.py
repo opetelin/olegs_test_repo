@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Error(object):
     def setupUi(self, Error):
         Error.setObjectName("Error")
-        Error.resize(288, 187)
+        Error.resize(173, 128)
         self.verticalLayout = QtWidgets.QVBoxLayout(Error)
         self.verticalLayout.setObjectName("verticalLayout")
         self.err_label = QtWidgets.QLabel(Error)

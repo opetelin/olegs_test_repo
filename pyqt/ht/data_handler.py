@@ -13,6 +13,7 @@ from tinydb import TinyDB, Query
 
 
 default_thread_names = ['Physical Wellness', 'Mental Wellness', 'Diet', 'Exercise']
+default_high_is_good = [True, True, True, True]
 
 
 def get_database(db_path='./db.json'):
@@ -82,7 +83,6 @@ class Database:
 		Database.db_open = True
 
 		program_state = Program_State( initialized=True, quicklist_threads = default_thread_names )
-		#self.db.insert( {'Program_State': program_state.as_dict()} )
 		self.update_program_state( program_state )
 
 		self.create_default_threads()
@@ -122,7 +122,7 @@ class Database:
 		self.db.insert( {'Program_State': new_program_state.as_dict()} )
 
 
-	def add_quicklist_thread(self, thread_name):
+	def add_quicklist_thread(self, thread_name, high_is_good):
 		threads = self.get_threads()
 		pstate = self.get_program_state()
 
@@ -132,7 +132,7 @@ class Database:
 		#create this thread if it doesn't exist already
 		if thread_name not in threads and result:
 			self.add_empty_thread(thread_name)
-			self.add_item_to_thread('Overall', thread_name)
+			self.add_item_to_thread('Overall', high_is_good, thread_name)
 
 		return result
 
@@ -174,9 +174,9 @@ class Database:
 	def create_default_threads(self):
 		self.db.insert( {'Threads': {}} )
 
-		for name in default_thread_names:
-			self.add_empty_thread( name )
-			self.add_item_to_thread('Overall', name)
+		for thread_name in default_thread_names:
+			self.add_empty_thread( thread_name )
+			self.add_item_to_thread('Overall', default_high_is_good[ default_thread_names.index(thread_name) ], thread_name)
 
 	
 	def add_empty_thread(self, thread_name):
@@ -210,10 +210,10 @@ class Database:
 		self.db.insert( d )
 
 
-	def add_item_to_thread(self, item_name, thread_name):
+	def add_item_to_thread(self, item_name, high_is_good, thread_name):
 		"""Adds an empty item with the specified name to the specified thread"""
 		threads = self.get_threads()
-		threads[thread_name].add_item( item_name )
+		threads[thread_name].add_item( item_name, high_is_good )
 		self.update_threads( threads )
 
 	def remove_item_from_thread(self, item_name, thread_name):
@@ -262,20 +262,28 @@ class Program_State:
 
 class Thread:
 	"""A thread is a grouping of activities/symptoms (e.g. Symptoms or Exercise, etc)"""
-	def __init__(self, name = '', 	#name of this thread
-	             item_dict = {}):	#items in this thread
+	def __init__(self, name = '', 		#name of this thread
+	             item_dict = {}):		#items in this thread
 
 		self.name = name
 		self.items = item_dict
 
 
-	def add_item(self, item_name):
+	def add_item(self, item_name, high_is_good):
 		"""Adds a new item to our items dict"""
 		if item_name in self.items:
 			print('item ' + item_name + ' is already in this thread.')	#TODO: these are gonna need to change to exceptions or error codes
 			sys.exit()
 
-		self.items[item_name] = Item(name=item_name)
+		self.items[item_name] = Item(name=item_name, high_is_good = high_is_good)
+
+	def add_event(self, item_name, date, score, comment, duration):
+		if item_name in self.items:
+			self.items[item_name].add_event(date, score, commment, duration)
+		else:
+			print(item_name + " not in threads's item list!")
+			sys.exit() 
+
 
 	def remove_item(self, item_name):
 		"""Removes the specified item from this thread"""
@@ -293,7 +301,7 @@ class Thread:
 		item_dict = {}
 
 		for item in items:
-			item_class = Item.from_database(item, items[item]['events'])
+			item_class = Item.from_database(item, items[item]['high_is_good'], items[item]['events'])
 			item_dict[item] = item_class
 
 		return cls(name, item_dict)
@@ -314,13 +322,26 @@ class Thread:
 
 class Item:
 	"""An item represents a specific activity/symptom within a thread (e.g. Jogging, or Lightheaded)"""
-	def __init__(self, name, 
+	def __init__(self, name,
+	             high_is_good,	#is a high score good? 
 	             event_list=[]):
 		self.name = name
+		self.high_is_good = high_is_good
 		self.events = event_list
 
+	def add_event(self, date, score, comment, duration):
+		#check that we don't have any duplications going by date (which should include the time as well)
+		for event in self.events:
+			if event.date == date:
+				print('An event with the provided date/time has already been recorded!')
+				sys.exit()
+
+		event = Event(date, score, comment, duration)
+		self.events += [event]
+
 	@classmethod
-	def from_database(cls, name, 
+	def from_database(cls, name,
+	                  high_is_good, 
 	                  events):
 		event_list = []
 
@@ -331,11 +352,12 @@ class Item:
 					    duration = event['duration'])
 			event_list += [event_class]
 
-		return cls(name, event_list)
+		return cls(name, high_is_good, event_list)
 	
 	def as_dict(self):
 		d = {}
 		d['name'] = self.name
+		d['high_is_good'] = self.high_is_good
 		
 		#"events" is a list of classes. need to convert each list entry to dict
 		event_list = []
