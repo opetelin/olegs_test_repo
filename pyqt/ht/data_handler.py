@@ -222,6 +222,14 @@ class Database:
 		threads[thread_name].remove_item( item_name )
 		self.update_threads( threads )
 
+	def add_event(self, thread_name, item_name, date, score, comment='', duration=-1):
+		threads = self.get_threads()
+		threads[thread_name].add_event(item_name, date, score, comment, duration)
+		self.update_threads( threads )
+		
+	def remove_event(self, thread_name, item_name, date):
+		pass	#TODO
+
 
 #Persistent program state
 class Program_State:
@@ -279,7 +287,7 @@ class Thread:
 
 	def add_event(self, item_name, date, score, comment, duration):
 		if item_name in self.items:
-			self.items[item_name].add_event(date, score, commment, duration)
+			self.items[item_name].add_event(date, score, comment, duration)
 		else:
 			print(item_name + " not in threads's item list!")
 			sys.exit() 

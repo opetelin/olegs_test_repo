@@ -53,8 +53,6 @@ class Ui_Dialog(object):
         self.verticalLayout_2.addLayout(self.verticalLayout)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.verticalLayout_2.addItem(spacerItem1)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.verticalLayout_2.addItem(spacerItem2)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.btn_ok = QtWidgets.QPushButton(Dialog)

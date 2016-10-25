@@ -5,6 +5,9 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+#my utilities file
+import util
+
 #database stuff
 from data_handler import Database
 
@@ -61,6 +64,19 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 		self.sliders = []
 		
 	def done_clicked(self):
+		db = Database()
+
+		#add info from all the sliders
+		for instance in self.sliders:
+			name = instance.slider_name
+			slider = instance.slider
+
+			slider_value = slider.value()
+
+			datetime = util.get_datetime_str()
+			
+			db.add_event(name, 'Overall', datetime, slider_value)
+			
 		self.close()
 	
 	def customize_clicked(self):
