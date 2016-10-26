@@ -33,7 +33,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.setupUi(self)
 		
 		#make the window size a bit bigger
-		self.resize(1000, 600)
+		self.resize(1000, 700)
 
 		#setup graphing
 		self.figure = plt.figure()
