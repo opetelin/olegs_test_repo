@@ -33,7 +33,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.setupUi(self)
 		
 		#make the window size a bit bigger
-		#self.resize(1200, 600)
+		self.resize(1000, 600)
 
 		#setup graphing
 		self.figure = plt.figure()
@@ -48,8 +48,12 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 		#button connections
 		self.btn_test.clicked.connect( self.test_clicked )
+		self.btn_quit.clicked.connect( self.quit_clicked )
 		self.btn_diary_update.clicked.connect( self.diary_update_clicked )
 		self.btn_new_diary_entry.clicked.connect( self.new_diary_entry )
+
+		#dropdown connections
+		self.cmb_thread_select.activated.connect( self.graph_thread_select_changed )
 
 		#show the current year/month
 		[[year, month, dummy], dummy] = util.get_split_date_time_str()
@@ -57,10 +61,21 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.line_month.setText(month)
 		self.line_diary_year.setText(year)
 		self.line_diary_month.setText(month)
+		self.update_diary()
+
+		#graphing lists/dropdowns
+		self.init_graph_thread_item_select()
+		self.add_default_graph_items()
+
+		#plot graph of default items:
+		#TODO
 
 	def test_clicked(self):
 		window = SlidersWindow()
 		window.exec_()
+
+	def quit_clicked(self):
+		self.close()
 
 	def new_diary_entry(self):
 		window = DiaryEntryWindow()
@@ -94,8 +109,57 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 			if entry_year != year or entry_month != month:
 				continue
 
+			self.diary_text.append( '*****************************************' )
 			self.diary_text.append( date + ' ' + time )
 			self.diary_text.append( text + '\n' )
+
+	def graph_thread_select_changed(self):
+		self.update_graph_item_select( Database().get_threads() )
+
+	def clear_graph_lists_dropdowns(self):
+		self.cmb_thread_select.clear()
+		self.lst_item_select.clear()
+
+	def init_graph_thread_item_select(self):
+		self.clear_graph_lists_dropdowns()
+
+		db = Database()
+		#pstate = db.get_program_state()
+		threads = db.get_threads()
+
+		#update thread select dropdown
+		string_list = []#QtCore.QStringList()
+		for key in threads:
+			thread = threads[key]
+			name = thread.name
+			#string_list.append( name )
+			string_list += [name]
+		self.cmb_thread_select.addItems( string_list )
+
+		#update item select list
+		self.update_graph_item_select(threads)
+
+	def update_graph_item_select(self, threads):
+		self.lst_item_select.clear()
+
+		#get name of thread currently highlighted by dropdown
+		thread_name = str(self.cmb_thread_select.currentText())
+
+		#get items from this thread
+		item_dict = threads[thread_name].items
+
+		for key in item_dict:
+			self.lst_item_select.addItem( key )
+			
+	def add_default_graph_items(self):
+		db = Database()
+		pstate = db.get_program_state()
+		quicklist = pstate.quicklist_threads
+
+		for name in quicklist:
+			self.lst_active_graph_items.addItem( name + ' (Overall)' )
+
+
 
 
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>895</width>
-    <height>628</height>
+    <height>697</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,7 +52,21 @@
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item alignment="Qt::AlignTop">
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Customize Graph:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="label_2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -75,19 +89,6 @@
                </property>
               </widget>
              </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
              <item alignment="Qt::AlignTop">
               <widget class="QLabel" name="label">
                <property name="sizePolicy">
@@ -105,6 +106,53 @@
               <widget class="QLineEdit" name="line_month"/>
              </item>
              <item>
+              <widget class="QPushButton" name="btn_update_graph">
+               <property name="text">
+                <string>Update Data</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Category:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cmb_thread_select"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>Item:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QListWidget" name="lst_item_select"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_add_graph_item">
+               <property name="text">
+                <string>Add To Graph</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -118,9 +166,19 @@
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="btn_update_graph">
+              <widget class="QLabel" name="label_9">
                <property name="text">
-                <string>Show</string>
+                <string>Current Graph Items:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QListWidget" name="lst_active_graph_items"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_remove_graph_item">
+               <property name="text">
+                <string>Remove From Graph</string>
                </property>
               </widget>
              </item>
@@ -197,8 +255,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>853</width>
-             <height>414</height>
+             <width>96</width>
+             <height>96</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -231,7 +289,7 @@
         <item>
          <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;HealthThreads&lt;/span&gt; is a program to help you and your doctor manage&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;your health and medication. Moreover, it is a useful tool to help&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;you set and keep track of personal goals such as diet and&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;exercise, and monitor their effect on your wellbeing.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;This is a prototype inteded to explore and refine eventual features.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Copyright Oleg Petelin 2016&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;HealthThreads&lt;/span&gt; is a program to help you and your doctor communicate&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;and effectively manage your health. Moreover, it is a useful tool to help&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;you set and keep track of personal goals such as diet and&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;exercise, and monitor their effect on your wellbeing.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;This is a prototype intended to explore and refine eventual features.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Copyright Oleg Petelin 2016&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="textFormat">
            <enum>Qt::AutoText</enum>
@@ -242,18 +300,48 @@
       </widget>
      </widget>
     </item>
-    <item alignment="Qt::AlignRight">
-     <widget class="QPushButton" name="btn_test">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>QuickThreads</string>
-      </property>
-     </widget>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_test">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>QuickThreads</string>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="QPushButton" name="btn_quit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Quit</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
