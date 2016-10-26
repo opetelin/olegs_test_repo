@@ -85,6 +85,9 @@ class Database:
 		program_state = Program_State( initialized=True, quicklist_threads = default_thread_names )
 		self.update_program_state( program_state )
 
+		diary = Diary()
+		self.update_diary( diary )
+
 		self.create_default_threads()
 
 
@@ -229,6 +232,46 @@ class Database:
 		
 	def remove_event(self, thread_name, item_name, date, time):
 		pass	#TODO
+
+	def get_diary(self):
+		diary = None
+
+		if Database.db_open:
+			diaries_list = self.db.search( Query().Diary != None )
+			if diaries_list == []:
+				print('Database has no defined diary. Database at: ' + self.db_path)
+				sys.exit()
+			if len(diaries_list) > 1: 
+				print('Found more than one diary in database: ' + self.db_path)
+				sys.exit()
+
+			diary = diaries_list[0]
+
+			#convert the database entry to an actual class
+			diary = Diary.from_database( diary['Diary']['entries'] )
+		else:
+			print("Can't get diary. No database open.")
+			sys.exit()
+
+		return diary
+
+	def update_diary(self, new_diary):
+		self.db.remove( Query().Diary != None )
+		self.db.insert( {'Diary': new_diary.as_dict()} )
+
+	def add_diary_entry(self, date, time, entry):
+		diary = self.get_diary()
+
+		diary.add_entry(date, time, entry)
+
+		self.update_diary( diary )
+
+	def remove_diadry_entry(self, date, time):
+		#TODO
+		pass
+		
+
+		
 
 
 #Persistent program state
@@ -402,6 +445,7 @@ class Event:
 
 
 class Diary:
+	"""A diary class. Intended for a user to type up diary entries"""
 	def __init__(self, entries = []):
 		self.entries = entries
 
@@ -411,10 +455,10 @@ class Diary:
 
 
 	@classmethod
-	def from_database(cls, entries_dict):
+	def from_database(cls, entries):
 		entry_list = []
-		for entry in entries_dict:
-			entry_class = Diary_Entry(entries[entry]['date'], entries[entry]['time'])
+		for entry in entries:
+			entry_class = Diary_Entry( entry['date'], entry['time'], entry['entry'] )
 			entry_list += [entry_class]
 
 		return cls(entry_list)
@@ -430,6 +474,7 @@ class Diary:
 
 
 class Diary_Entry:
+	"""A diary entry contains the entry, and the date/time that the entry was made"""
 	def __init__(self, date, time, entry):
 		self.date = date
 		self.time = time

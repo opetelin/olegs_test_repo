@@ -15,6 +15,7 @@ import main_window
 import err_dialog
 import sliders
 import add_slider_threads_dialog
+import new_diary_entry
 
 
 
@@ -45,8 +46,10 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 		self.load_quicklist_sliders()
 
 		#button connections
-		self.btn_done.clicked.connect( self.done_clicked )
 		self.btn_customize.clicked.connect( self.customize_clicked )
+		self.btn_diary.clicked.connect( self.diary_clicked )
+		self.btn_save.clicked.connect( self.save_clicked )
+		self.btn_cancel.clicked.connect( self.cancel_clicked )
 
 	def load_quicklist_sliders(self):
 		db = Database()
@@ -63,7 +66,7 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 				self.sliders_container.removeItem( self.sliders_container.itemAt(i).spacerItem() )
 		self.sliders = []
 		
-	def done_clicked(self):
+	def save_clicked(self):
 		db = Database()
 
 		#add info from all the sliders
@@ -78,6 +81,9 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 			db.add_event(name, 'Overall', date, time, slider_value)
 			
 		self.close()
+
+	def cancel_clicked(self):
+		self.close()
 	
 	def customize_clicked(self):
 		window = AddSlidersDialog()
@@ -85,6 +91,43 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 		self.remove_quicklist_sliders()
 		self.load_quicklist_sliders()
 		self.resize(346, 22)	#doesn't work?
+
+	def diary_clicked(self):
+		window = DiaryEntryWindow()
+		window.exec_()
+
+
+class DiaryEntryWindow(QtWidgets.QDialog, new_diary_entry.Ui_Dialog):
+	def __init__(self):
+		super().__init__()
+		self.setupUi(self)
+		self.setModal(True)
+
+		#set time and date
+		[date, time] = util.get_date_time_str()
+		self.date = date
+		self.time = time
+
+		self.lbl_date.setText( 'Date: ' + date )
+		self.lbl_time.setText( 'Time: ' + time )
+
+		#button connections
+		self.btn_cancel.clicked.connect( self.cancel_clicked )
+		self.btn_save.clicked.connect( self.save_clicked )
+
+
+	def cancel_clicked(self):
+		self.close()
+
+	def save_clicked(self):
+		db = Database()
+
+		entry = str( self.txt_diary.toPlainText() )
+		#entry = str( self.txt_diary.toHtml() )
+
+		db.add_diary_entry(self.date, self.time, entry)
+
+		self.close()
 
 
 
@@ -174,6 +217,8 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 			thread_name = widget_item.text()
 			db.remove_quicklist_thread( thread_name )
 			del widget_item
+
+
 
 
 			

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>346</width>
-    <height>132</height>
+    <height>164</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,7 +51,38 @@
      <item>
       <layout class="QVBoxLayout" name="sliders_container"/>
      </item>
-     <item alignment="Qt::AlignBottom">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="btn_customize">
+         <property name="text">
+          <string>Customize</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_diary">
+         <property name="text">
+          <string>Diary</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <widget class="Line" name="line">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -60,17 +91,17 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <item alignment="Qt::AlignBottom">
-        <widget class="QPushButton" name="btn_customize">
+       <item>
+        <widget class="QPushButton" name="btn_cancel">
          <property name="text">
-          <string>Customize</string>
+          <string>Cancel</string>
          </property>
         </widget>
        </item>
        <item alignment="Qt::AlignBottom">
-        <widget class="QPushButton" name="btn_done">
+        <widget class="QPushButton" name="btn_save">
          <property name="text">
-          <string>OK</string>
+          <string>Save</string>
          </property>
         </widget>
        </item>
