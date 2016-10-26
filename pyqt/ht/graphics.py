@@ -5,12 +5,18 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+#stuff for plotting graphs
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
 #my utilities file
 import util
 
 #database stuff
 from data_handler import Database
 
+#graphics designs from Qt Designer
 import main_window
 import err_dialog
 import sliders
@@ -20,12 +26,22 @@ import new_diary_entry
 
 
 
-
-
 class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
+	"""Main window of the app"""
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
+		
+		#make the window size a bit bigger
+		#self.resize(1200, 600)
+
+		#setup graphing
+		self.figure = plt.figure()
+		self.canvas = FigureCanvas(self.figure)
+		self.toolbar = NavigationToolbar(self.canvas, self)
+
+		self.graph_container.addWidget(self.canvas)
+		self.graph_container.addWidget(self.toolbar)
 
 		#button connections
 		self.btn_test.clicked.connect( self.test_clicked )

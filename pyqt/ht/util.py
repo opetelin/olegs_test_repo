@@ -20,3 +20,15 @@ def get_date_time_str():
 
 	return [date, time]
 
+
+def get_split_date_time_str():
+	"""returns [[year, month, day], [hour, minute, second]]"""
+	[date, time] = get_date_time_str()
+
+	split_date = date.split('-')
+	split_time = time.split(':')
+
+	return [split_date, split_time]
+
+	
+
