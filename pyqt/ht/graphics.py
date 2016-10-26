@@ -43,13 +43,62 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.graph_container.addWidget(self.canvas)
 		self.graph_container.addWidget(self.toolbar)
 
+		#other settings
+		self.diary_text.setReadOnly(True)
+
 		#button connections
 		self.btn_test.clicked.connect( self.test_clicked )
+		self.btn_diary_update.clicked.connect( self.diary_update_clicked )
+		self.btn_new_diary_entry.clicked.connect( self.new_diary_entry )
+
+		#show the current year/month
+		[[year, month, dummy], dummy] = util.get_split_date_time_str()
+		self.line_year.setText(year)
+		self.line_month.setText(month)
+		self.line_diary_year.setText(year)
+		self.line_diary_month.setText(month)
 
 	def test_clicked(self):
 		window = SlidersWindow()
 		window.exec_()
-	
+
+	def new_diary_entry(self):
+		window = DiaryEntryWindow()
+		window.exec_()
+		self.update_diary()
+
+	def diary_update_clicked(self):
+		self.update_diary()
+
+	def update_diary(self):
+		db = Database()
+		diary = db.get_diary()
+
+		self.diary_text.clear()
+
+		year = str(self.line_diary_year.text())
+		month = str(self.line_diary_month.text())
+		year = int(year)
+		month = int(month)
+
+		#get all diary entries for this year and month
+		for entry in diary.entries:
+			date = entry.date
+			time = entry.time
+			text = entry.entry
+			[entry_year, entry_month, entry_day] = date.split('-')
+			entry_year = int(entry_year)
+			entry_month = int(entry_month)
+			entry_day = int(entry_day)
+
+			if entry_year != year or entry_month != month:
+				continue
+
+			self.diary_text.append( date + ' ' + time )
+			self.diary_text.append( text + '\n' )
+
+
+
 
 class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 	def __init__(self):

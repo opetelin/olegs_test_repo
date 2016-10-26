@@ -453,7 +453,6 @@ class Diary:
 		entry = Diary_Entry(date, time, entry)
 		self.entries += [entry]
 
-
 	@classmethod
 	def from_database(cls, entries):
 		entry_list = []

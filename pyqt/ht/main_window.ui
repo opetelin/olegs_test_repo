@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>895</width>
-    <height>599</height>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -150,6 +150,44 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Year</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="line_diary_year"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Month</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="line_diary_month"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_diary_update">
+          <property name="text">
+           <string>Show</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QScrollArea" name="scrollArea">
           <property name="widgetResizable">
            <bool>true</bool>
@@ -160,10 +198,22 @@
              <x>0</x>
              <y>0</y>
              <width>853</width>
-             <height>495</height>
+             <height>414</height>
             </rect>
            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QTextEdit" name="diary_text"/>
+            </item>
+           </layout>
           </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_new_diary_entry">
+          <property name="text">
+           <string>New Diary Entry</string>
+          </property>
          </widget>
         </item>
        </layout>
@@ -177,11 +227,29 @@
        <attribute name="title">
         <string>About</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;HealthThreads&lt;/span&gt; is a program to help you and your doctor manage&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;your health and medication. Moreover, it is a useful tool to help&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;you set and keep track of personal goals such as diet and&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;exercise, and monitor their effect on your wellbeing.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;This is a prototype inteded to explore and refine eventual features.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Copyright Oleg Petelin 2016&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::AutoText</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
-    <item>
+    <item alignment="Qt::AlignRight">
      <widget class="QPushButton" name="btn_test">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="text">
        <string>QuickThreads</string>
       </property>
