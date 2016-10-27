@@ -390,6 +390,19 @@ class Item:
 		event = Event(date, time, score, comment, duration)
 		self.events += [event]
 
+	def get_events_at_date(self, year, month):
+		"""Returns a list of all events that occured on the specified year/month"""
+		date_events = []
+		for event in self.events:
+			[event_year, event_month, event_day] = event.date.split('-')
+			event_year = int(year)
+			event_month = int(month)
+
+			if event_year == year and event_month == month:
+				date_events += [event]
+
+		return date_events
+
 	@classmethod
 	def from_database(cls, name,
 	                  high_is_good, 
@@ -442,6 +455,18 @@ class Event:
 		d['comment'] = self.comment
 		d['duration'] = self.duration
 		return d
+
+	def get_date_and_time(self):
+		[year, month, day] = self.date.split('-')
+		[hour, minute, second] = self.time.split(':')
+		year = int(year)
+		month = int(month)
+		day = int(day)
+		hour = int(hour)
+		minute = int(minute)
+		second = int(second)
+
+		return [year, month, day, hour, minute, second]
 
 
 class Diary:

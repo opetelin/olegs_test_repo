@@ -33,7 +33,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.setupUi(self)
 		
 		#make the window size a bit bigger
-		self.resize(1000, 700)
+		self.resize(1000, 800)
 
 		#setup graphing
 		self.figure = plt.figure()
@@ -57,8 +57,8 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 		#show the current year/month
 		[[year, month, dummy], dummy] = util.get_split_date_time_str()
-		self.line_year.setText(year)
-		self.line_month.setText(month)
+		self.line_graph_year.setText(year)
+		self.line_graph_month.setText(month)
 		self.line_diary_year.setText(year)
 		self.line_diary_month.setText(month)
 		self.update_diary()
@@ -68,7 +68,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.add_default_graph_items()
 
 		#plot graph of default items:
-		#TODO
+		self.plot_graph_from_active_items_list()
 
 	def test_clicked(self):
 		window = SlidersWindow()
@@ -159,12 +159,99 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		for name in quicklist:
 			self.lst_active_graph_items.addItem( name + ' (Overall)' )
 
+	def plot_graph_from_active_items_list(self):
+		plot_items = []		#2d array. first column is thread names, second column is corresponding item names
+
+		#get thread/item names from the active graph items list
+		#the list entries are in format Thread (Item)
+		num_items = self.lst_active_graph_items.count()
+		for i in range(0, num_items):
+			text = str( self.lst_active_graph_items.item( i ).text() )
+			text = text.split(' (')
+			thread_name = text[0]
+			item_name = text[1]
+			item_name = item_name.replace(')', '')	#get rid of the final ')' character
+			plot_items += [[thread_name, item_name]]
+
+		self.plot_graph( plot_items )
+
+	def plot_graph(self, plot_items):	#plot items is 2d array. first column is thread name, second column is item name
+		db = Database()
+		pstate = db.get_program_state()
+		threads = db.get_threads()
+
+		year = int(self.line_graph_year.text())
+		month = int(self.line_graph_month.text())
+
+		self.figure.clear()
+		ax = self.figure.add_subplot(111)
+		#ax.hold(False)
+		ax.axis([1,32,1,11])
+
+		style_index = 0
+		for plot_item in plot_items:
+			thread_name = plot_item[0]
+			item_name = plot_item[1]
+
+			if thread_name not in threads:
+				print('Thread to plot is not in list of database threads!')
+				sys.exit()
+
+			#get all events at the current month/date
+			events = threads[ thread_name ].items[ item_name ].get_events_at_date(year, month)
+
+			x_data = []
+			y_data = []
+			
+			for event in events:
+				#get date/time of event
+				[eyear, emonth, eday, ehour, eminute, esecond] = event.get_date_and_time()
+
+				#time as fraction of a whole day
+				seconds_in_day = 24*60*60
+				event_seconds = ehour*60*60 + eminute*60 + esecond
+				fractional_time = event_seconds / seconds_in_day
+
+				x_val = eday + fractional_time
+				y_val = event.score
+
+				x_data += [x_val]
+				y_data += [y_val]
+			
+			#get the line style
+			line_style = self.get_graph_line_style( style_index )
+
+			#do the actual plotting
+			label = thread_name + ' (' + item_name + ')'
+			ax.plot(x_data, y_data, line_style, label=label)
+			ax.legend(loc=0, fontsize=11)
+			#ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0., fontsize=10)
+
+			style_index += 1
+
+		self.canvas.draw()
 
 
+	def get_graph_line_style(self, i):
+		"""returns a graph line style based on an int number"""
+		styles = ['bs-',
+		          'r*--',
+			  'go-.',
+			  'kv:',
+			  'cs-',
+			  'm+--',
+			  'bp-.',
+			  'rD:',
+			  'g^-']
+		num_styles = len(styles)
+		ind = i % num_styles
+		return styles[ind]
+		
 
 
 
 class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
+	"""This is basically the quickthreads window"""
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
@@ -227,6 +314,7 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 
 
 class DiaryEntryWindow(QtWidgets.QDialog, new_diary_entry.Ui_Dialog):
+	"""New diary entries are written here"""
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
@@ -261,7 +349,7 @@ class DiaryEntryWindow(QtWidgets.QDialog, new_diary_entry.Ui_Dialog):
 
 
 class QuickSlider:
-	"""Works with the sliders window dialog to add and update the custom sliders"""
+	"""This is basically a slider and the associated text for the quickthreads window"""
 	def __init__(self, layout, slider_name):
 		self.slider = QtWidgets.QSlider(orientation = 1)
 		self.slider.setTickInterval(1)
@@ -290,6 +378,7 @@ class QuickSlider:
 
 
 class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
+	"""Customization of the quickthreads window is done through this dialog"""
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
@@ -346,8 +435,6 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 			thread_name = widget_item.text()
 			db.remove_quicklist_thread( thread_name )
 			del widget_item
-
-
 
 
 			
