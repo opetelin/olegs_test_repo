@@ -185,7 +185,6 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 		self.figure.clear()
 		ax = self.figure.add_subplot(111)
-		#ax.hold(False)
 		ax.axis([1,32,1,11])
 
 		style_index = 0
@@ -224,10 +223,12 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 			#do the actual plotting
 			label = thread_name + ' (' + item_name + ')'
 			ax.plot(x_data, y_data, line_style, label=label)
-			ax.legend(loc=0, fontsize=11)
+			ax.legend(loc=0, fontsize=11)	#'best' location
 			#ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0., fontsize=10)
 
 			style_index += 1
+
+		#todo: graph title with month/year
 
 		self.canvas.draw()
 
