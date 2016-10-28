@@ -33,7 +33,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.setupUi(self)
 		
 		#make the window size a bit bigger
-		self.resize(1000, 800)
+		self.resize(1200, 800)
 
 		#setup graphing
 		self.figure = plt.figure()
@@ -51,6 +51,8 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.btn_quit.clicked.connect( self.quit_clicked )
 		self.btn_diary_update.clicked.connect( self.diary_update_clicked )
 		self.btn_new_diary_entry.clicked.connect( self.new_diary_entry )
+		self.btn_add_graph_item.clicked.connect( self.add_graph_item_clicked )
+		self.btn_remove_graph_item.clicked.connect( self.remove_graph_item_clicked )
 
 		#dropdown connections
 		self.cmb_thread_select.activated.connect( self.graph_thread_select_changed )
@@ -76,6 +78,35 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 	def quit_clicked(self):
 		self.close()
+
+	def add_graph_item_clicked(self):
+		thread = str(self.cmb_thread_select.currentText())
+		item = str(self.lst_item_select.currentItem().text())
+
+		string = thread + ' (' + item + ')'
+
+		list_contains_string = False
+		for row in range(0, self.lst_active_graph_items.count()):
+			text = self.lst_active_graph_items.item( row ).text()
+			if text == string:
+				list_contains_string = True
+				break
+
+		if not list_contains_string:
+			self.lst_active_graph_items.addItem( QtWidgets.QListWidgetItem(string) )
+			self.plot_graph_from_active_items_list()
+
+
+		#add this new item if it doesn't already exist
+		#print(self.lst_active_graph_items.row( QtWidgets.QListWidgetItem(string) ))
+		#if self.lst_active_graph_items.row( QtWidgets.QListWidgetItem(string) ) < 0:
+			#plot...
+
+
+	def remove_graph_item_clicked(self):
+		row = self.lst_active_graph_items.currentRow()
+		item = self.lst_active_graph_items.takeItem(row)
+		self.plot_graph_from_active_items_list()
 
 	def new_diary_entry(self):
 		window = DiaryEntryWindow()
@@ -184,8 +215,8 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		month = int(self.line_graph_month.text())
 
 		self.figure.clear()
-		ax = self.figure.add_subplot(111)
-		ax.axis([1,32,1,11])
+		#ax = self.figure.add_subplot(111)
+		plt.axis([1,32,1,11])
 
 		style_index = 0
 		for plot_item in plot_items:
@@ -222,13 +253,17 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 			#do the actual plotting
 			label = thread_name + ' (' + item_name + ')'
-			ax.plot(x_data, y_data, line_style, label=label)
-			ax.legend(loc=0, fontsize=11)	#'best' location
+			#ax.plot(x_data, y_data, line_style, label=label)
+			#ax.legend(loc=0, ncol=2, fontsize=11)	#'best' location
 			#ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0., fontsize=10)
+			plt.plot(x_data, y_data, line_style, label=label)
+			plt.legend(loc=0, ncol=2, fontsize=11)	#'best' location
 
 			style_index += 1
 
 		#todo: graph title with month/year
+		plt.xlabel('Day')
+		plt.ylabel('Score')
 
 		self.canvas.draw()
 
