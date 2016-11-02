@@ -53,6 +53,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.btn_new_diary_entry.clicked.connect( self.new_diary_entry )
 		self.btn_add_graph_item.clicked.connect( self.add_graph_item_clicked )
 		self.btn_remove_graph_item.clicked.connect( self.remove_graph_item_clicked )
+		self.btn_update_graph.clicked.connect( self.update_graph_clicked )
 
 		#dropdown connections
 		self.cmb_thread_select.activated.connect( self.graph_thread_select_changed )
@@ -96,7 +97,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 			self.lst_active_graph_items.addItem( QtWidgets.QListWidgetItem(string) )
 			self.plot_graph_from_active_items_list()
 
-
+		#This doesn't work for some reason???
 		#add this new item if it doesn't already exist
 		#print(self.lst_active_graph_items.row( QtWidgets.QListWidgetItem(string) ))
 		#if self.lst_active_graph_items.row( QtWidgets.QListWidgetItem(string) ) < 0:
@@ -190,6 +191,9 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		for name in quicklist:
 			self.lst_active_graph_items.addItem( name + ' (Overall)' )
 
+	def update_graph_clicked(self):
+		self.plot_graph_from_active_items_list()
+
 	def plot_graph_from_active_items_list(self):
 		plot_items = []		#2d array. first column is thread names, second column is corresponding item names
 
@@ -229,6 +233,8 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 			#get all events at the current month/date
 			events = threads[ thread_name ].items[ item_name ].get_events_at_date(year, month)
+			#for event in events:
+			#	print(event.get_date_and_time())
 
 			x_data = []
 			y_data = []

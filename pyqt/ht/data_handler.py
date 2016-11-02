@@ -395,8 +395,8 @@ class Item:
 		date_events = []
 		for event in self.events:
 			[event_year, event_month, event_day] = event.date.split('-')
-			event_year = int(year)
-			event_month = int(month)
+			event_year = int(event_year)
+			event_month = int(event_month)
 
 			if event_year == year and event_month == month:
 				date_events += [event]
