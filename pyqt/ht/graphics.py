@@ -64,7 +64,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.update_diary()
 
 		#graphing lists/dropdowns
-		self.init_graph_thread_item_select()
+		self.init_graph_thread_select()
 		self.add_default_graph_items()
 
 		#plot graph of default items:
@@ -144,7 +144,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 	def clear_graph_lists_dropdowns(self):
 		self.cmb_thread_select.clear()
 
-	def init_graph_thread_item_select(self):	#XXX
+	def init_graph_thread_select(self):
 		self.clear_graph_lists_dropdowns()
 
 		db = Database()
@@ -170,7 +170,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 	def update_graph_clicked(self):
 		self.plot_graph_from_active_items_list()
 
-	def plot_graph_from_active_items_list(self):	#XXX
+	def plot_graph_from_active_items_list(self):
 		plot_items = []		#2d array. first column is thread names, second column is corresponding item names
 
 		#get thread/item names from the active graph items list
@@ -183,7 +183,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 		self.plot_graph( plot_items )
 
-	def plot_graph(self, plot_items):	#XXX
+	def plot_graph(self, plot_items):	#TODO: scale thread values in accordance with the graph y-axis
 		db = Database()
 		pstate = db.get_program_state()
 		threads = db.get_threads()
@@ -195,6 +195,8 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		#ax = self.figure.add_subplot(111)
 		plt.axis([1,32,1,11])
 
+		max_y = 11
+
 		style_index = 0
 		for plot_item in plot_items:
 			thread_name = plot_item
@@ -205,6 +207,10 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 			#get all events at the current month/date
 			events = threads[ thread_name ].get_events_at_date(year, month)
+
+			#adjust graph y-axis range
+			if threads[thread_name].max_val > max_y:
+				max_y = threads[thread_name].max_val
 
 			x_data = []
 			y_data = []
@@ -238,8 +244,10 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 			style_index += 1
 
 		#todo: graph title with month/year
+
 		plt.xlabel('Day')
 		plt.ylabel('Score')
+		plt.axis([1,32,1,max_y])
 
 		self.canvas.draw()
 
