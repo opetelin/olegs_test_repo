@@ -282,9 +282,12 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 	def load_quicklist_sliders(self):
 		db = Database()
 		pstate = db.get_program_state()
+		threads = db.get_threads()
 
 		for name in pstate.quicklist_threads:
-			self.sliders += [QuickSlider( self.sliders_container, name )]
+			min_val = threads[name].min_val
+			max_val = threads[name].max_val
+			self.sliders += [QuickSlider( self.sliders_container, name, min_val, max_val )]
 
 	def remove_quicklist_sliders(self):
 		for i in reversed(range(self.sliders_container.count())):
@@ -362,12 +365,12 @@ class DiaryEntryWindow(QtWidgets.QDialog, new_diary_entry.Ui_Dialog):
 
 class QuickSlider:
 	"""This is basically a slider and the associated text for the quickthreads window"""
-	def __init__(self, layout, slider_name):
+	def __init__(self, layout, slider_name, min_val, max_val):
 		self.slider = QtWidgets.QSlider(orientation = 1)
 		self.slider.setTickInterval(1)
 		self.slider.setTickPosition(2)
-		self.slider.setMinimum(1)
-		self.slider.setMaximum(10)
+		self.slider.setMinimum(min_val)
+		self.slider.setMaximum(max_val)
 
 		self.slider_name = slider_name
 		self.label = QtWidgets.QLabel( slider_name )
@@ -396,6 +399,7 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 		self.setupUi(self)
 
 		self.populate_thread_list()
+		self.populate_cmb_list()
 
 		#no other window can be selected while this one is up
 		self.setModal(True)
@@ -405,7 +409,8 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 
 		#button connections
 		self.btn_ok.clicked.connect( self.ok_clicked )
-		self.btn_add.clicked.connect( self.add_clicked )
+		self.btn_add_new.clicked.connect( self.add_new_clicked )
+		self.btn_add_existing.clicked.connect( self.add_existing_clicked )
 		self.btn_remove.clicked.connect( self.remove_clicked )
 
 
@@ -415,10 +420,25 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 		for name in pstate.quicklist_threads:
 			self.thread_list.addItem( name ) #QtCore.QString(name) )
 
+	def populate_cmb_list(self):
+		self.cmb_threads.clear()
+
+		db = Database()
+		threads = db.get_threads()
+
+		#update thread select dropdown
+		string_list = []
+		for key in threads:
+			thread = threads[key]
+			name = thread.name
+			#string_list.append( name )
+			string_list += [name]
+		self.cmb_threads.addItems( string_list )
+
 	def ok_clicked(self):
 		self.close()
 	
-	def add_clicked(self):
+	def add_new_clicked(self):
 		db = Database()
 
 		#get text from our textbox
@@ -432,17 +452,32 @@ class AddSlidersDialog(QtWidgets.QDialog, add_slider_threads_dialog.Ui_Dialog):
 			#get checkbox value
 			high_is_good = self.chk_high_is_good.isChecked()
 
+			#get min/max values
+			min_val = int(self.txt_min_val.text())
+			max_val = int(self.txt_max_val.text())
+
 			#add this thread name to program state and the threads list
-			if db.add_quicklist_thread( new_thread_name, high_is_good ):
+			if db.add_quicklist_thread( new_thread_name, high_is_good, min_val, max_val ):
 				#update the list widget
 				self.thread_list.addItem( new_thread_name ) 
+
+			del db
+			self.populate_cmb_list()
+
+	def add_existing_clicked(self):
+		db = Database()
+		
+		thread = str(self.cmb_threads.currentText())
+
+		if db.add_quicklist_thread( thread ):
+			self.thread_list.addItem( thread )
 
 	def remove_clicked(self):
 		db = Database()
 		
 		#get the selected entry
 		row = self.thread_list.currentRow()
-		if row > 0:
+		if row >= 0:
 			widget_item = self.thread_list.takeItem(row)
 			thread_name = widget_item.text()
 			db.remove_quicklist_thread( thread_name )

@@ -7,10 +7,10 @@ from tinydb import TinyDB, Query
 
 
 
-default_thread_names = ['Physical Wellness', 'Mental Wellness', 'Diet', 'Exercise']
-default_high_is_good = [True, True, True, True]
-default_min_val = [1, 1, 1, 0]
-default_max_val = [10, 10, 10, 120]
+default_thread_names = ['Sleep']
+default_high_is_good = [True]
+default_min_val = [0]
+default_max_val = [12]
 
 
 def get_database(db_path='./db.json'):
@@ -121,7 +121,7 @@ class Database:
 		self.db.insert( {'Program_State': new_program_state.as_dict()} )
 
 
-	def add_quicklist_thread(self, thread_name, high_is_good, min_val=1, max_val=10):
+	def add_quicklist_thread(self, thread_name, high_is_good=True, min_val=1, max_val=10):
 		threads = self.get_threads()
 		pstate = self.get_program_state()
 
