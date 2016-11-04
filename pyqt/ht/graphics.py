@@ -55,9 +55,6 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		self.btn_remove_graph_item.clicked.connect( self.remove_graph_item_clicked )
 		self.btn_update_graph.clicked.connect( self.update_graph_clicked )
 
-		#dropdown connections
-		self.cmb_thread_select.activated.connect( self.graph_thread_select_changed )
-
 		#show the current year/month
 		[[year, month, dummy], dummy] = util.get_split_date_time_str()
 		self.line_graph_year.setText(year)
@@ -82,9 +79,8 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 	def add_graph_item_clicked(self):
 		thread = str(self.cmb_thread_select.currentText())
-		item = str(self.lst_item_select.currentItem().text())
 
-		string = thread + ' (' + item + ')'
+		string = thread
 
 		list_contains_string = False
 		for row in range(0, self.lst_active_graph_items.count()):
@@ -145,43 +141,23 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 			self.diary_text.append( date + ' ' + time )
 			self.diary_text.append( text + '\n' )
 
-	def graph_thread_select_changed(self):
-		self.update_graph_item_select( Database().get_threads() )
-
 	def clear_graph_lists_dropdowns(self):
 		self.cmb_thread_select.clear()
-		self.lst_item_select.clear()
 
-	def init_graph_thread_item_select(self):
+	def init_graph_thread_item_select(self):	#XXX
 		self.clear_graph_lists_dropdowns()
 
 		db = Database()
-		#pstate = db.get_program_state()
 		threads = db.get_threads()
 
 		#update thread select dropdown
-		string_list = []#QtCore.QStringList()
+		string_list = []
 		for key in threads:
 			thread = threads[key]
 			name = thread.name
 			#string_list.append( name )
 			string_list += [name]
 		self.cmb_thread_select.addItems( string_list )
-
-		#update item select list
-		self.update_graph_item_select(threads)
-
-	def update_graph_item_select(self, threads):
-		self.lst_item_select.clear()
-
-		#get name of thread currently highlighted by dropdown
-		thread_name = str(self.cmb_thread_select.currentText())
-
-		#get items from this thread
-		item_dict = threads[thread_name].items
-
-		for key in item_dict:
-			self.lst_item_select.addItem( key )
 			
 	def add_default_graph_items(self):
 		db = Database()
@@ -189,12 +165,12 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		quicklist = pstate.quicklist_threads
 
 		for name in quicklist:
-			self.lst_active_graph_items.addItem( name + ' (Overall)' )
+			self.lst_active_graph_items.addItem( name )
 
 	def update_graph_clicked(self):
 		self.plot_graph_from_active_items_list()
 
-	def plot_graph_from_active_items_list(self):
+	def plot_graph_from_active_items_list(self):	#XXX
 		plot_items = []		#2d array. first column is thread names, second column is corresponding item names
 
 		#get thread/item names from the active graph items list
@@ -202,15 +178,12 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 		num_items = self.lst_active_graph_items.count()
 		for i in range(0, num_items):
 			text = str( self.lst_active_graph_items.item( i ).text() )
-			text = text.split(' (')
-			thread_name = text[0]
-			item_name = text[1]
-			item_name = item_name.replace(')', '')	#get rid of the final ')' character
-			plot_items += [[thread_name, item_name]]
+			thread_name = text
+			plot_items += [thread_name]
 
 		self.plot_graph( plot_items )
 
-	def plot_graph(self, plot_items):	#plot items is 2d array. first column is thread name, second column is item name
+	def plot_graph(self, plot_items):	#XXX
 		db = Database()
 		pstate = db.get_program_state()
 		threads = db.get_threads()
@@ -224,17 +197,14 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 		style_index = 0
 		for plot_item in plot_items:
-			thread_name = plot_item[0]
-			item_name = plot_item[1]
+			thread_name = plot_item
 
 			if thread_name not in threads:
-				print('Thread to plot is not in list of database threads!')
+				print('Thread to plot (%s) is not in list of database threads!' % (thread_name))
 				sys.exit()
 
 			#get all events at the current month/date
-			events = threads[ thread_name ].items[ item_name ].get_events_at_date(year, month)
-			#for event in events:
-			#	print(event.get_date_and_time())
+			events = threads[ thread_name ].get_events_at_date(year, month)
 
 			x_data = []
 			y_data = []
@@ -258,7 +228,7 @@ class MyApp(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 			line_style = self.get_graph_line_style( style_index )
 
 			#do the actual plotting
-			label = thread_name + ' (' + item_name + ')'
+			label = thread_name
 			#ax.plot(x_data, y_data, line_style, label=label)
 			#ax.legend(loc=0, ncol=2, fontsize=11)	#'best' location
 			#ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0., fontsize=10)
@@ -336,7 +306,7 @@ class SlidersWindow(QtWidgets.QDialog, sliders.Ui_Dialog):
 
 			[date, time] = util.get_date_time_str()
 			
-			db.add_event(name, 'Overall', date, time, slider_value)
+			db.add_event(name, date, time, slider_value)
 			
 		self.close()
 
