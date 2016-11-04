@@ -6,23 +6,10 @@ import sys
 from tinydb import TinyDB, Query
 
 
-
 default_thread_names = ['Sleep']
 default_high_is_good = [True]
 default_min_val = [0]
 default_max_val = [12]
-
-
-def get_database(db_path='./db.json'):
-	"""all database accesses outside this file should be done through this function so that only one instance of the
-	database is open at a time
-	"""
-	result = None
-	if get_database.used == False:
-		result = Database(db_path = db_path)
-	
-	return result
-get_database.used = False	#initial value of our function static variable
 
 
 
