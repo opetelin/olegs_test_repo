@@ -30,7 +30,7 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <layout class="QVBoxLayout" name="graph_container"/>
           </widget>
           <widget class="QFrame" name="frame">
@@ -130,14 +130,14 @@
             <item>
              <widget class="QToolBox" name="toolBox">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="page">
                <property name="geometry">
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>754</width>
+                 <width>819</width>
                  <height>380</height>
                 </rect>
                </property>
@@ -150,8 +150,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>799</width>
-                 <height>378</height>
+                 <width>819</width>
+                 <height>380</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -167,7 +167,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Category:</string>
+                   <string>Thread</string>
                   </property>
                  </widget>
                 </item>
@@ -175,29 +175,6 @@
                  <widget class="QComboBox" name="cmb_thread_select">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_8">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Item:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QListWidget" name="lst_item_select">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
@@ -267,13 +244,10 @@
                  </widget>
                 </item>
                </layout>
-               <zorder>label_6</zorder>
                <zorder>btn_remove_graph_item</zorder>
-               <zorder>label_8</zorder>
                <zorder>label_9</zorder>
                <zorder>lst_active_graph_items</zorder>
                <zorder>cmb_thread_select</zorder>
-               <zorder>lst_item_select</zorder>
                <zorder>label_6</zorder>
                <zorder>btn_add_graph_item</zorder>
                <zorder>horizontalSpacer_2</zorder>
@@ -339,8 +313,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>853</width>
-             <height>558</height>
+             <width>98</width>
+             <height>96</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
