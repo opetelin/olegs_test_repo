@@ -18,8 +18,8 @@ from sklearn.linear_model import LogisticRegression
 # the more CONFIDENCE we have that the sample belongs to this class. Then we just pick the class
 # with the highest associated confidence. Neato burrito.
 
-#added logistic regression test as well. Logistic regression is still a linear algorithm for binary classification.
-# it assumes that the probability that the estimated probability of sample x belonging to its (correct) class y is related to the net-input z as
+#added logistic regression test as well. Logistic regression is still a linear algorithm for binary classification (and not regression!)
+# it assumes that the estimated probability of sample x belonging to its (correct) class y is related to the net-input z as
 #       logit[ p(y | x) ] = z = w0 + w1x1 + w2x2 + ...			y \in {0,1}
 #
 # so that
