@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Perceptron
 
+from sklearn.linear_model import LogisticRegression
+
 
 #Basically the same as classifier1.py, except we use the built-in scikit-learn class.
 #NOTE: this implements multiclass classification using binary classifiers at its core.
@@ -15,6 +17,16 @@ from sklearn.linear_model import Perceptron
 # POSITIVE DISTANCE from each classifier boundary. The farther we are into a classifier's region, 
 # the more CONFIDENCE we have that the sample belongs to this class. Then we just pick the class
 # with the highest associated confidence. Neato burrito.
+
+#added logistic regression test as well. Logistic regression is still a linear algorithm for binary classification.
+# it assumes that the probability that the estimated probability of sample x belonging to its (correct) class y is related to the net-input z as
+#       logit[ p(y | x) ] = z = w0 + w1x1 + w2x2 + ...			y \in {0,1}
+#
+# so that
+#       p(y|x) = logistic(z)  <-- the sigmoid function
+#
+# the cost function that learns our weights is then related to the probability that each sample was classified correctly
+#	(i.e. the product of the probabilities that each sample belongs to its correct class \in {0,1})
 
 
 
@@ -69,14 +81,24 @@ def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.01):
 def main():
 	[X_train_std, y_train, X_test_std, y_test] = get_data()
 	
+	#Adaline perceptron
 	ppn = Perceptron(n_iter=40, eta0=0.1, random_state=0)
 	ppn.fit(X_train_std, y_train)
 	y_pred = ppn.predict(X_test_std)
-	print('Misscasified: %d' % (y_test != y_pred).sum())
+	print('Adaline misscasified: %d' % (y_test != y_pred).sum())
+
+	#logistic regression
+	lr = LogisticRegression(C=1000, random_state=0)		#a higher C decreases the importance of the regularization term in the cost function being minimized (as 1/C)
+	lr.fit(X_train_std, y_train)
+	y_pred = lr.predict(X_test_std)
+	print('Logistic regression misscasified: %d' % (y_test != y_pred).sum())
+
+	#classifier = ppn
+	classifier = lr
 
 	X_combined_std = np.vstack((X_train_std, X_test_std))
 	y_combined = np.hstack((y_train, y_test))
-	plot_decision_regions(X_combined_std, y_combined, ppn, test_idx=range(105,150))
+	plot_decision_regions(X_combined_std, y_combined, classifier, test_idx=range(105,150))
 	plt.xlabel('petal length [standardized]')
 	plt.ylabel('sepal length [standardized]')
 	plt.legend(loc='best')
